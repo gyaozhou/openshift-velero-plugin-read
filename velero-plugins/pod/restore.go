@@ -60,6 +60,9 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 	if err != nil {
 		return nil, err
 	}
+	// zhou: the registry mapping already stored in object annotations.
+	//       So, the pod.Spec.Containers.Image should be same as "backupRegistry".
+	//       Otherwise, users made some mistakes.
 	common.SwapContainerImageRefs(pod.Spec.Containers, backupRegistry, registry, p.Log, input.Restore.Spec.NamespaceMapping)
 	common.SwapContainerImageRefs(pod.Spec.InitContainers, backupRegistry, registry, p.Log, input.Restore.Spec.NamespaceMapping)
 
@@ -131,7 +134,7 @@ func (p *RestorePlugin) Execute(input *velero.RestoreItemActionExecuteInput) (*v
 				continue
 			}
 
-			if len(excludePVC) > 0 &&  contains(volume.Name){
+			if len(excludePVC) > 0 && contains(volume.Name) {
 				continue
 			}
 			pvcVolumes = append(pvcVolumes, volume)

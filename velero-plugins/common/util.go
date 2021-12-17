@@ -12,6 +12,8 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 )
 
+// zhou: README
+
 // ReplaceImageRefPrefix replaces an image reference prefix with newPrefix.
 // If the input image reference does not start with oldPrefix, an error is returned
 func ReplaceImageRefPrefix(s, oldPrefix, newPrefix string, namespaceMapping map[string]string) (string, error) {
@@ -25,6 +27,8 @@ func ReplaceImageRefPrefix(s, oldPrefix, newPrefix string, namespaceMapping map[
 		return "", err
 	}
 	outPath := refSplit[1]
+	// zhou: namespace here, I suppose means the registry distribution.
+	//       e.g. "registry-1.docker.io/distribution/registry:2.1"
 	namespaceSplit := strings.SplitN(refSplit[1], "/", 2)
 	if len(namespaceSplit) == 2 && namespaceMapping[namespaceSplit[0]] != "" { // change namespace if mapping is enabled
 		outPath = strings.Join([]string{namespaceMapping[namespaceSplit[0]], namespaceSplit[1]}, "/")
@@ -85,6 +89,8 @@ func ParseLocalImageReference(s, prefix string) (*LocalImageReference, error) {
 	return &parsed, nil
 }
 
+// zhou: README,
+
 // SwapContainerImageRefs updates internal image references from
 // backup registry to restore registry pathnames
 func SwapContainerImageRefs(containers []corev1API.Container, oldRegistry, newRegistry string, log logrus.FieldLogger, namespaceMapping map[string]string) {
@@ -103,6 +109,8 @@ func SwapContainerImageRefs(containers []corev1API.Container, oldRegistry, newRe
 	}
 
 }
+
+// zhou: update Pull Secret.
 
 // UpdatePullSecret updates registry pull (or push) secret
 // with a secret found in the dest cluster
@@ -132,6 +140,8 @@ func UpdatePullSecret(
 	}
 	return secretRef, nil
 }
+
+// zhou: In this plugin, src/dest clusters info stored in objects annotations.
 
 // GetSrcAndDestRegistryInfo returns the Registry hostname for both src and dest clusters
 func GetSrcAndDestRegistryInfo(item runtime.Unstructured) (string, string, error) {

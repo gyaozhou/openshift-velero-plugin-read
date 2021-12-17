@@ -1,2 +1,4 @@
 .go/
 _output/
+cscope.files
+cscope.out
